@@ -68,11 +68,6 @@ enableEmoji = true
       type = 'fragments'
       weight = 10
 
-[languages.en]
-  languageCode = "en"
-  languageName = "English"
-  weight = 1
-
 [languages.en.params]
   locale = "en"
   label = "English"
