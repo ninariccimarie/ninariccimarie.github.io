@@ -1,6 +1,4 @@
 disabled = false
-languageCode = "en"
-languageName = "English"
 weight = 1
 title = "Nina Benite"
 
@@ -13,6 +11,11 @@ title = "Nina Benite"
   # secondaryLogo = "img/secondary-logo.png"
   # description = "My awesome website"
   # copyright = "Copy, _right?_ :thinking_face:"
+
+[params.meta]
+  author="Nina Ricci Marie Benite"
+  description="Full-stack engineer · React, TypeScript, Rust"
+  favicon=false
 
 [params.author]
   name = "Nina Ricci Marie Benite"
