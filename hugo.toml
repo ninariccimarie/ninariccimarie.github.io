@@ -1,5 +1,4 @@
 baseURL = 'https://ninariccimarie.github.io/'
-locale = 'en-us'
 title = 'Nina Benite'
 
 theme = "blowfish"
