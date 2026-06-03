@@ -1,0 +1,117 @@
+{{- $page := .Page | default . -}}
+{{- $variant := .variant | default "default" -}}
+{{- $label := .label | default "Get in touch" -}}
+{{ $formspree := getenv "HUGO_FORMSPREE_ID" }}
+
+<button
+  type="button"
+  class="contact-trigger{{ if eq $variant "cta" }} contact-trigger--cta{{ end }}"
+  data-contact-open
+  aria-haspopup="dialog"
+  aria-controls="contact-modal">
+  {{ $label }}
+</button>
+
+{{- if not ($page.Scratch.Get "contactModalRendered") -}}
+  {{- $page.Scratch.Set "contactModalRendered" true -}}
+
+  <div
+    id="contact-modal"
+    class="contact-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="contact-modal-title"
+    aria-hidden="true"
+    hidden>
+    <div class="contact-modal__backdrop" data-contact-close tabindex="-1"></div>
+
+    <div class="contact-modal__dialog">
+      <header class="contact-modal__header">
+        <h2 id="contact-modal-title" class="contact-modal__title">Get in touch</h2>
+        <button
+          type="button"
+          class="contact-modal__close"
+          data-contact-close
+          aria-label="Close contact form">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </header>
+
+      <form
+        class="contact-form"
+        action="https://formspree.io/f/{{ $formspree }}"
+        method="POST">
+        <label class="contact-form__field">
+          <span class="contact-form__label">Your email</span>
+          <input
+            type="email"
+            name="email"
+            required
+            autocomplete="email"
+            placeholder="you@example.com">
+        </label>
+
+        <label class="contact-form__field">
+          <span class="contact-form__label">Your message</span>
+          <textarea
+            name="message"
+            required
+            rows="5"
+            placeholder="What would you like to discuss?"></textarea>
+        </label>
+
+        <button type="submit" class="contact-form__submit">Send</button>
+      </form>
+    </div>
+  </div>
+
+  {{ $js := resources.Get "js/contact-modal.js" -}}
+  {{- if $js -}}
+    <script src="{{ $js.RelPermalink }}" defer></script>
+  {{- else -}}
+    <script defer>
+      (function () {
+        var modal = document.getElementById("contact-modal");
+        if (!modal || modal.dataset.bound === "true") return;
+        modal.dataset.bound = "true";
+
+        var openers = document.querySelectorAll("[data-contact-open]");
+        var closers = modal.querySelectorAll("[data-contact-close]");
+        var form = modal.querySelector(".contact-form");
+        var lastActive = null;
+
+        function openModal() {
+          lastActive = document.activeElement;
+          modal.hidden = false;
+          modal.setAttribute("aria-hidden", "false");
+          document.body.classList.add("contact-modal-open");
+          var firstField = form && form.querySelector("input, textarea");
+          if (firstField) firstField.focus();
+        }
+
+        function closeModal() {
+          modal.hidden = true;
+          modal.setAttribute("aria-hidden", "true");
+          document.body.classList.remove("contact-modal-open");
+          if (lastActive && lastActive.focus) lastActive.focus();
+        }
+
+        openers.forEach(function (btn) {
+          btn.addEventListener("click", openModal);
+        });
+
+        closers.forEach(function (el) {
+          el.addEventListener("click", closeModal);
+        });
+
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape" && !modal.hidden) closeModal();
+        });
+
+        modal.addEventListener("click", function (e) {
+          if (e.target === modal) closeModal();
+        });
+      })();
+    </script>
+  {{- end -}}
+{{- end -}}

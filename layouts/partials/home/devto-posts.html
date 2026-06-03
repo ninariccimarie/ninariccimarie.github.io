@@ -1,0 +1,43 @@
+{{- $username := .Site.Params.devto.username | default "ninariccimarie" -}}
+{{- $limit := .Site.Params.devto.limit | default 4 -}}
+{{- $profileUrl := .Site.Params.devto.profileUrl | default (printf "https://dev.to/%s" $username) -}}
+{{- $apiUrl := printf "https://dev.to/api/articles?username=%s&per_page=%d" $username $limit -}}
+{{- $remote := resources.GetRemote $apiUrl -}}
+{{- $posts := cond (ne $remote nil) ($remote | transform.Unmarshal) slice -}}
+
+<section class="home-posts" aria-labelledby="home-posts-title">
+  <div class="home-posts__header">
+    <h2 id="home-posts-title" class="home-section__title">My recent posts</h2>
+    <a href="{{ $profileUrl }}" class="home-section__link" target="_blank" rel="noopener noreferrer">
+      View on DEV →
+    </a>
+  </div>
+
+  {{- if gt (len $posts) 0 -}}
+    <ul class="home-posts__list">
+      {{- range $posts -}}
+        <li class="home-posts__item">
+          <a
+            class="home-posts__title"
+            href="{{ .url }}"
+            target="_blank"
+            rel="noopener noreferrer">
+            {{ .title }}
+          </a>
+          <p class="home-posts__meta">
+            <time datetime="{{ .published_at }}">{{ .readable_publish_date }}</time>
+            {{- with .reading_time_minutes -}}
+              <span aria-hidden="true"> · </span>
+              <span>{{ . }} min read</span>
+            {{- end -}}
+          </p>
+        </li>
+      {{- end -}}
+    </ul>
+  {{- else -}}
+    <p class="home-posts__empty">
+      Posts are unavailable right now.
+      <a href="{{ $profileUrl }}" target="_blank" rel="noopener noreferrer">Read on DEV</a>.
+    </p>
+  {{- end -}}
+</section>

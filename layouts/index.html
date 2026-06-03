@@ -1,0 +1,33 @@
+{{ define "main" }}
+
+<div class="home-landing">
+  {{ partial "home/landing-profile.html" . }}
+
+  <div class="home-profile__actions">
+    {{ partial "contact-modal.html" (dict "Page" . "variant" "hero" "label" "Get in touch") }}
+  </div>
+
+  {{ partial "home/devto-posts.html" . }}
+
+  <nav class="home-sections" aria-label="Site sections">
+    <section class="home-section">
+      <h2 class="home-section__title">Journey</h2>
+      <p class="home-section__summary">Iloilo, PH → Makati, PH → Singapore. From features to system ownership.</p>
+      <a href="/journey/" class="home-section__link">Read more</a>
+    </section>
+
+    <section class="home-section">
+      <h2 class="home-section__title">Skills</h2>
+      <p class="home-section__summary">Full stack across React, Rust, event-driven systems, and production infra.</p>
+      <a href="/skills/" class="home-section__link">View skills</a>
+    </section>
+
+    <section class="home-section home-section--cta">
+      <h2 class="home-section__title">Connect</h2>
+      <p class="home-section__summary">Open to roles where engineering shapes real-world outcomes.</p>
+      {{ partial "contact-modal.html" (dict "Page" . "variant" "cta" "label" "Send a message") }}
+    </section>
+  </nav>
+</div>
+
+{{ end }}

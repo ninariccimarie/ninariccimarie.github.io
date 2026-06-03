@@ -1,0 +1,45 @@
+{{- $disableImageOptimization := .Site.Params.disableImageOptimization | default false -}}
+<header class="home-profile flex flex-col items-center text-center">
+  {{- with .Site.Params.Author.image -}}
+    {{- $authorImage := "" -}}
+    {{- if or (strings.HasPrefix . "http:") (strings.HasPrefix . "https:") -}}
+      {{- $authorImage = resources.GetRemote . -}}
+    {{- else -}}
+      {{- $authorImage = resources.Get . -}}
+    {{- end -}}
+    {{- if $authorImage -}}
+      {{- $final := $authorImage -}}
+      {{- $squareImage := $authorImage -}}
+      {{- if not (or $disableImageOptimization (eq $authorImage.MediaType.SubType "svg")) -}}
+        {{- $final = $authorImage.Fill (print "288x288 q" ( $.Site.Params.Author.imagequality | default "96" )) -}}
+        {{- $shortSide := int (math.Min $authorImage.Width $authorImage.Height) -}}
+        {{- $squareImage = $authorImage.Crop (printf "%dx%d" $shortSide $shortSide) -}}
+      {{- end -}}
+      <img
+        class="home-profile__avatar mb-3 h-28 w-28 rounded-full object-cover"
+        width="112"
+        height="112"
+        alt="{{ $.Site.Params.Author.name | default `Author` }}"
+        src="{{ $final.RelPermalink }}"
+        data-zoom-src="{{ $squareImage.RelPermalink }}">
+    {{- end -}}
+  {{- end -}}
+
+  <h1 class="home-profile__name font-semibold tracking-tight">
+    {{ .Site.Params.Author.name | default .Site.Title }}
+  </h1>
+
+  {{- with .Site.Params.Author.headline -}}
+    <p class="home-profile__headline text-neutral-500 dark:text-neutral-400">
+      {{ . | markdownify }}
+    </p>
+  {{- end -}}
+
+  <div class="home-profile__links mt-3">
+    {{ partialCached "author-links.html" . }}
+  </div>
+
+  {{- with .Site.Params.Author.bio -}}
+    <p class="home-profile__bio">{{ . | markdownify }}</p>
+  {{- end -}}
+</header>
