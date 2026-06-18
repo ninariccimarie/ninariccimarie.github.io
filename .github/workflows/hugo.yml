@@ -35,6 +35,9 @@ jobs:
           HUGO_FORMSPREE_ID: ${{ secrets.HUGO_FORMSPREE_ID }}
         run: hugo --minify
 
+      - name: Add CNAME
+        run: echo "ninariccimarie.dev" > public/CNAME
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
